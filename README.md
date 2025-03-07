@@ -1,0 +1,2 @@
+# kkfileview_nas
+这是一个专门用于NAS版的文件文档预览项目，基于kkfileview
