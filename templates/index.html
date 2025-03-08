@@ -1,84 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File List</title>
+    <title>文件列表</title>
     <style>
+        /* 🌟 定义浅色 & 深色模式的 CSS 变量 */
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: white;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --hover-bg: #e9ecef;
+        }
+
+        /* 🌙 深色模式 */
+        [data-theme="dark"] {
+            --bg-color: #181818;
+            --text-color: #ffffff;
+            --card-bg: #242424;
+            --card-shadow: rgba(255, 255, 255, 0.1);
+            --hover-bg: #333;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Arial", sans-serif;
             margin: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px var(--card-shadow);
+            transition: background 0.3s, box-shadow 0.3s;
         }
         ul {
             list-style-type: none;
             padding-left: 20px;
         }
         li {
-            padding: 5px;
+            padding: 8px;
             cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border-radius: 5px;
+        }
+        li:hover {
+            background-color: var(--hover-bg);
         }
         li.folder::before {
             content: "📁 ";
+            font-weight: bold;
+        }
+        li.folder.open::before {
+            content: "📂 ";
         }
         li.file::before {
             content: "📄 ";
         }
-        li a {
-            text-decoration: none;
+        li.file {
             color: #007bff;
+            font-weight: bold;
         }
-        li a:hover {
+        li.file:hover {
             text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        .folder ul {
+            padding-left: 15px;
+            transition: max-height 0.3s ease-in-out;
+            overflow: hidden;
+        }
+        /* 🌟 让 "请稍等" 提示美观 */
+        #loadingMessage {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* 🌟 主题切换按钮 */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .theme-toggle:hover {
+            background-color: var(--hover-bg);
         }
     </style>
 </head>
 <body>
-    <h1>File List</h1>
-    <ul id="fileList">
-        {% for name, content in file_structure.items() %}
-            {% if content is mapping %}
-                <li class="folder" onclick="toggleFolder(this)">
-                    {{ name }}
-                    <ul style="display: none;">
-                        {% for sub_name, sub_content in content.items() %}
-                            {% if sub_content is mapping %}
-                                <li class="folder" onclick="toggleFolder(this)">
-                                    {{ sub_name }}
-                                    <ul style="display: none;">
-                                        {% for file_name, file_path in sub_content.items() %}
-                                            <li class="file">
-                                                {{ file_name }}
-                                                <a href="{{ generate_preview_url(file_path) }}" target="_blank">预览</a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                            {% else %}
-                                <li class="file">
-                                    {{ sub_name }}
-                                    <a href="{{ generate_preview_url(sub_content) }}" target="_blank">预览</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% else %}
-                <li class="file">
-                    {{ name }}
-                    <a href="{{ generate_preview_url(content) }}" target="_blank">预览</a>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" onclick="toggleTheme()">🌗 切换模式</button>
+
+    <div class="container">
+        <h1>📂 文件管理系统</h1>
+
+        <!-- "请稍等" 提示 -->
+        <div id="loadingMessage">🔄 请稍等，文件正在加载...</div>
+
+        <ul id="fileList">
+            {% for name, content in file_structure.items() %}
+                {% if content is mapping %}
+                    <li class="folder" onclick="toggleFolder(event, this)">
+                        {{ name }}
+                        <ul class="hidden">
+                            {% for sub_name, sub_content in content.items() %}
+                                {% if sub_content is mapping %}
+                                    <li class="folder" onclick="toggleFolder(event, this)">
+                                        {{ sub_name }}
+                                        <ul class="hidden">
+                                            {% for file_name, file_path in sub_content.items() %}
+                                                <li class="file" onclick="previewFile('{{ generate_preview_url(file_path) }}')">
+                                                    {{ file_name }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li class="file" onclick="previewFile('{{ generate_preview_url(sub_content) }}')">
+                                        {{ sub_name }}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="file" onclick="previewFile('{{ generate_preview_url(content) }}')">
+                        {{ name }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 
     <script>
-        // 切换文件夹的展开和收起
-        function toggleFolder(element) {
-            const subList = element.querySelector('ul');
+        function toggleFolder(event, element) {
+            event.stopPropagation(); // 防止事件冒泡到父级
+            let subList = element.querySelector('ul');
             if (subList) {
-                subList.style.display = subList.style.display === 'none' ? 'block' : 'none';
+                subList.classList.toggle('hidden'); // 切换隐藏状态
+                element.classList.toggle('open'); // 切换文件夹图标
             }
         }
+
+        function previewFile(url) {
+            document.getElementById("loadingMessage").style.display = "block";
+            sessionStorage.setItem("loadingActive", "true");
+            setTimeout(() => {
+                window.location.href = url;
+            }, 500);
+        }
+
+        window.onload = function() {
+            if (sessionStorage.getItem("loadingActive") === "true") {
+                document.getElementById("loadingMessage").style.display = "none";
+                sessionStorage.removeItem("loadingActive");
+            }
+            // 🌟 载入时检查用户上次选择的主题
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            } else {
+                // 默认跟随系统设置
+                if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    document.documentElement.setAttribute("data-theme", "dark");
+                }
+            }
+        }
+
+        function toggleTheme() {
+            let currentTheme = document.documentElement.getAttribute("data-theme");
+            let newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme); // 记住用户选择
+        }
     </script>
+
 </body>
 </html>

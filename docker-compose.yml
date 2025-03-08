@@ -1,11 +1,11 @@
 services:
   kkfileview_nas:
-    image: kkfileview_nas:v1.0
+    image: kkfileview_nas:v1.1
     container_name: kfileview_nas
     restart: always
     environment:
       - FILE_URL_DATA=192.168.10.28:5000 #NAS地址+当前容器映射的宿主端口
-      - PREVIEW_URL_DATA=192.168.10.28:8012 #kkfileview服务地址+当前容器映射的宿主端口
+      - PREVIEW_URL_DATA=192.168.10.28:8012 #kkfileview服务地址(如需公网访问，请填写公网地址)+kkfileview容器映射的宿主端口
     volumes:
       - /vol1/1000/文件:/app/files  # 需要预览的文件夹
     ports:
