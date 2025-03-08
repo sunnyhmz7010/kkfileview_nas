@@ -1,5 +1,5 @@
 # kkfileview_nas
-![image](https://github.com/user-attachments/assets/7da484ed-46c8-4263-a2eb-35d11c77abfd)
+![image](https://github.com/user-attachments/assets/fa22ab61-70f8-4418-b47a-0c0b01deb818)
 这是一个专门用于NAS版的文件文档预览项目，基于[kkfileview]([url](https://kkview.cn/zh-cn/index.html))
 
 # 如何部署
