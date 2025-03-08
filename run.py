@@ -5,15 +5,15 @@ from flask import Flask, render_template, send_from_directory
 app = Flask(__name__)
 
 # 读取环境变量
-# file_url_data = os.getenv("FILE_URL_DATA", "http://localhost")
-# preview_url_data = os.getenv("PREVIEW_URL_DATA", "http://localhost")
+file_url_data = os.getenv("FILE_URL_DATA", "http://localhost")
+preview_url_data = os.getenv("PREVIEW_URL_DATA", "http://localhost")
 
-file_url_data = '192.168.10.25:5000'
-preview_url_data = '192.168.10.28:8012'
+# file_url_data = '192.168.10.25:5000'
+# preview_url_data = '192.168.10.28:8012'
 
 # 设定文件目录（Windows 和 Linux 兼容）
-# FILE_DIR = os.getenv("FILE_DIR", os.path.abspath("files"))  # 默认 `files/` 目录
-FILE_DIR = 'files'
+FILE_DIR = os.getenv("FILE_DIR", os.path.abspath("files"))  # 默认 `files/` 目录
+# FILE_DIR = 'files'
 
 # 生成 kkFileView 预览链接（修正 Windows 路径）
 def generate_preview_url(file_path):
