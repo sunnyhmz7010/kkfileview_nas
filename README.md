@@ -7,6 +7,8 @@
 [点击这里查看最新](https://kkview.cn/zh-cn/docs/home.html)
 
 # 如何部署
+下载docker镜像包
+[123网盘下载](https://www.123684.com/s/4bNtVv-RK1Kv)
 ## 使用docker Compose
 ```bash
 services:
