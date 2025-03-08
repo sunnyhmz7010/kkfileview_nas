@@ -33,3 +33,4 @@ services:
     ports:
       - "8012:8012"  # 映射的服务地址
 ```
+[点击这里查看部署视频演示](https://www.bilibili.com/video/BV1MS9LYPEYY/)
