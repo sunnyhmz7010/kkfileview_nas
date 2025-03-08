@@ -1,6 +1,10 @@
 # kkfileview_nas
 ![image](https://github.com/user-attachments/assets/fa22ab61-70f8-4418-b47a-0c0b01deb818)
-这是一个专门用于NAS版的文件文档预览项目，基于[kkfileview]([url](https://kkview.cn/zh-cn/index.html))
+这是一个专门用于NAS版的文件文档预览项目，基于[kkfileview](https://kkview.cn/zh-cn/index.html)
+
+# 支持格式（引用官网）
+![image](https://github.com/user-attachments/assets/470f1072-49da-4f47-a564-c0871f4401f5)
+[点击这里查看最新](https://kkview.cn/zh-cn/docs/home.html)
 
 # 如何部署
 ## 使用docker Compose
