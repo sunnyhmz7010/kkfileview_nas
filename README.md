@@ -7,7 +7,7 @@
 ```bash
 services:
   kkfileview_nas:
-    image: kkfileview_nas:latest
+    image: kkfileview_nas:v1.1
     container_name: kfileview_nas
     restart: always
     environment:
